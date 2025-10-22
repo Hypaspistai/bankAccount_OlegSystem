@@ -1,15 +1,34 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import java.util.Random;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+public class BankAccount {
+    public static void main(String[] args) {
+        Account person = new Account("Олег", "Щегольков", 0);
+        person.personOleg();
+
+        Thread replenishmentOfBalance = new Thread(() -> {
+            Random random = new Random();
+            for (int i = 0; i < 10; i++) {
+                try {
+                    double amount = random.nextDouble(50, 100);
+                    person.replenishmentOfBalance(amount);
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        });
+
+        replenishmentOfBalance.start();
+
+        person.withdrawalOfMoney(500);
+
+        System.out.println("\u001B[34m" + "Конечный баланс: " + person.endBalance() + " руб." + "\u001B[0m");
+
+        try {
+            replenishmentOfBalance.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 }
